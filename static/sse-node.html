@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSE(Server-Sent Events)</title>
+</head>
+<body>
+    <button id="open">sendEvent</button>
+    <div id="events"></div> <!-- 容器用于显示事件数据 -->
+    <button id="close">close</button>
+    <script>
+        let source; 
+       
+        const eventsContainer = document.getElementById('events');
+        const close = document.getElementById('close');
+        const open = document.getElementById("open");
+
+        function createEventSource() {
+            source = new EventSource('/events');
+            source.addEventListener("message", (e) => {
+                // 创建一个新的段落元素来显示每条消息
+                const newElement = document.createElement('p');
+                newElement.textContent = e.data;
+                eventsContainer.appendChild(newElement);
+            });
+
+            source.addEventListener("error", (e) => {
+                // 处理错误，例如连接失败
+                console.error('EventSource failed:', e);
+                source.close(); // 关闭连接
+            });
+        }
+        
+        // 初始化EventSource连接
+        createEventSource();
+
+        close.addEventListener("click", function (e) {
+            source.close();
+        })
+
+        open.addEventListener("click", function () {
+            if (!source || source.readyState === EventSource.CLOSED) {
+                createEventSource();
+            }
+        })
+
+    </script>
+</body>
+</html>

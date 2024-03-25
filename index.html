@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream download</title>
+</head>
+<body>
+    <button id="btn">download</button>
+
+    <script>
+        const btn = document.getElementById('btn');
+        btn.onclick = () => {
+            fetch('http://localhost:3000/download', {
+                method: 'post',
+                body: JSON.stringify({filename: 'index.txt'}),
+                headers: {
+                    'Content-Type': "application/json"
+                }
+            }).then(res => res.arrayBuffer()).then(res => {
+                const blob = new Blob([res], {type: "image/png"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = '1.png';
+                a.click()
+            })
+        }
+    </script>
+</body>
+</html>
